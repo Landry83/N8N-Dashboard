@@ -299,7 +299,9 @@ export function DashboardContent() {
             
             {/* Right side - AI Assistant */}
             <div className="lg:col-span-1">
-              <VoiceInterface />
+              <div className="sticky top-6 max-h-[calc(100vh-6rem)] overflow-hidden">
+                <VoiceInterface />
+              </div>
             </div>
             
           </div>

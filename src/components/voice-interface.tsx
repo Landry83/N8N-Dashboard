@@ -158,8 +158,8 @@ export function VoiceInterface() {
   ];
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
+    <Card className="h-full flex flex-col max-h-[calc(100vh-6rem)]">
+      <CardHeader className="flex-shrink-0">
         <CardTitle className="flex items-center gap-2">
           <Bot className="h-5 w-5 text-primary" />
           AI Assistant
@@ -169,8 +169,8 @@ export function VoiceInterface() {
           Chat with your AI workflow assistant. Ask questions, execute workflows, or get help.
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col gap-4">
-        <ScrollArea className="flex-1 h-[400px]">
+      <CardContent className="flex-1 flex flex-col gap-4 min-h-0">
+        <ScrollArea className="flex-1">
           <div className="space-y-6 p-4">
             {messages.map((message) => (
               <div key={message.id} className="space-y-2">
@@ -247,10 +247,12 @@ export function VoiceInterface() {
         </ScrollArea>
 
         {/* Voice Status */}
-        <VoiceDemoStatus voiceRecorder={voiceRecorder} />
+        <div className="flex-shrink-0">
+          <VoiceDemoStatus voiceRecorder={voiceRecorder} />
+        </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 flex-shrink-0">
           {quickActions.map((action, index) => (
             <Button
               key={index}
@@ -266,7 +268,7 @@ export function VoiceInterface() {
         </div>
         
         {/* Input Area */}
-        <div className="space-y-4">
+        <div className="space-y-4 flex-shrink-0">
           <div className="flex gap-2">
             <Input
               value={inputValue}
@@ -286,13 +288,13 @@ export function VoiceInterface() {
           </div>
           
           {/* Voice Controls */}
-          <div className="space-y-4">
+          <div className="space-y-3 flex-shrink-0">
             {/* Audio Visualizer */}
             <div className="flex justify-center">
               <CircularAudioVisualizer
                 isRecording={voiceRecorder.isRecording}
                 audioStream={voiceRecorder.audioStream}
-                height={100}
+                height={80}
                 className="mx-auto"
               />
             </div>
@@ -303,9 +305,9 @@ export function VoiceInterface() {
                 variant={voiceRecorder.isRecording ? "destructive" : "outline"}
                 size="icon"
                 disabled={isProcessing || voiceRecorder.isProcessing}
-                className="h-12 w-12"
+                className="h-10 w-10"
               >
-                {voiceRecorder.isRecording ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+                {voiceRecorder.isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
               </Button>
               
               <div className="flex flex-col items-center gap-1">
@@ -325,9 +327,9 @@ export function VoiceInterface() {
                 onClick={() => setIsCallActive(!isCallActive)}
                 variant={isCallActive ? "destructive" : "default"}
                 size="icon"
-                className="h-12 w-12"
+                className="h-10 w-10"
               >
-                {isCallActive ? <PhoneOff className="h-5 w-5" /> : <Phone className="h-5 w-5" />}
+                {isCallActive ? <PhoneOff className="h-4 w-4" /> : <Phone className="h-4 w-4" />}
               </Button>
             </div>
 
@@ -335,8 +337,8 @@ export function VoiceInterface() {
             <AudioVisualizer
               isRecording={voiceRecorder.isRecording}
               audioStream={voiceRecorder.audioStream}
-              height={40}
-              barCount={25}
+              height={30}
+              barCount={20}
               className="w-full"
             />
           </div>
