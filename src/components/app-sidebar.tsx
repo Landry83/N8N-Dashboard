@@ -37,7 +37,7 @@ const data = {
   user: {
     name: "N8N Admin",
     email: "admin@n8n.local",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "/avatars/shadcn.svg",
   },
   navMain: [
     {
@@ -117,17 +117,17 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: IconSettings,
     },
     {
       title: "Get Help",
-      url: "#",
+      url: "/docs",
       icon: IconHelp,
     },
     {
       title: "Search",
-      url: "#",
+      url: "/search",
       icon: IconSearch,
     },
   ],
