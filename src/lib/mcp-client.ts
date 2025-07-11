@@ -43,13 +43,13 @@ interface ExecutionData {
 export class MCPClient {
   private baseUrl: string;
 
-  constructor(baseUrl: string = 'http://localhost:3001') {
+  constructor(baseUrl: string = '') {
     this.baseUrl = baseUrl;
   }
 
   private async callTool(toolName: string, args: any = {}): Promise<MCPResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tools/call`, {
+      const response = await fetch(`/api/tools/call`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

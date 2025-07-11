@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Play, Square, Power, PowerOff, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { VoiceInterface } from "@/components/voice-interface";
 
 export function DashboardContent() {
   const {
@@ -56,10 +57,15 @@ export function DashboardContent() {
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
           
-          {/* System Health Status */}
-          {systemHealth && (
-            <div className="px-4 lg:px-6">
-              <Card>
+          {/* Main Dashboard Layout with AI Assistant */}
+          <div className="px-4 lg:px-6">
+            <div className="grid gap-4 lg:grid-cols-3">
+              {/* Left side - Main content */}
+              <div className="lg:col-span-2 space-y-4">
+                
+                {/* System Health Status */}
+                {systemHealth && (
+                  <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     System Status
@@ -92,11 +98,10 @@ export function DashboardContent() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          )}
+            )}
 
-          {/* Real-time Statistics Cards */}
-          <div className="px-4 lg:px-6">
+            {/* Real-time Statistics Cards */}
+            <div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -152,15 +157,15 @@ export function DashboardContent() {
                 </CardContent>
               </Card>
             </div>
-          </div>
+            </div>
 
-          {/* Charts */}
-          <div className="px-4 lg:px-6">
-            <ChartAreaInteractive />
-          </div>
+            {/* Charts */}
+            <div>
+              <ChartAreaInteractive />
+            </div>
 
-          {/* Workflows Table */}
-          <div className="px-4 lg:px-6">
+            {/* Workflows Table */}
+            <div>
             <Card>
               <CardHeader>
                 <CardTitle>Workflows</CardTitle>
@@ -234,10 +239,10 @@ export function DashboardContent() {
                 )}
               </CardContent>
             </Card>
-          </div>
+            </div>
 
-          {/* Recent Executions */}
-          <div className="px-4 lg:px-6">
+            {/* Recent Executions */}
+            <div>
             <Card>
               <CardHeader>
                 <CardTitle>Recent Executions</CardTitle>
@@ -285,7 +290,18 @@ export function DashboardContent() {
                 )}
               </CardContent>
             </Card>
+            </div>
+            
+            </div>
+            
+            {/* Right side - AI Assistant */}
+            <div className="lg:col-span-1">
+              <VoiceInterface />
+            </div>
+            
           </div>
+        </div>
+        
         </div>
       </div>
     </div>

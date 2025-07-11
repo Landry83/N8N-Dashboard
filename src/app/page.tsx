@@ -17,6 +17,33 @@ export default function Home() {
             </p>
           </div>
 
+          <Card className="border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span>🎯</span>
+                Command Palette
+              </CardTitle>
+              <CardDescription>
+                Press <kbd className="px-2 py-1 text-xs font-semibold bg-muted rounded">⌘ K</kbd> (Mac) or <kbd className="px-2 py-1 text-xs font-semibold bg-muted rounded">Ctrl K</kbd> (Windows/Linux) to open the command palette
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  The command palette lets you quickly navigate between pages, trigger actions, and search through all content. Try it now!
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => {
+                    const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true });
+                    document.dispatchEvent(event);
+                  }}>
+                    Open Command Palette
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
