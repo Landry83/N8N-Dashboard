@@ -198,15 +198,15 @@ export default function IntegrationsPage() {
   const sortedIntegrations = [...filteredIntegrations].sort((a, b) => {
     switch (sortBy) {
       case 'name':
-        return a.displayName.localeCompare(b.displayName);
+        return (a.displayName || '').localeCompare(b.displayName || '');
       case 'category':
-        return a.category.localeCompare(b.category);
+        return (a.category || '').localeCompare(b.category || '');
       case 'popularity':
         return (b.usageCount || 0) - (a.usageCount || 0);
       case 'rating':
         return (b.rating || 0) - (a.rating || 0);
       case 'updated':
-        return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+        return new Date(b.lastUpdated || 0).getTime() - new Date(a.lastUpdated || 0).getTime();
       default:
         return 0;
     }

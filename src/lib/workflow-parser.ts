@@ -1,4 +1,4 @@
-import { createDeepSeekClient, DeepSeekClient } from './deepseek-client';
+import { createDeepSeekWebClient, DeepSeekWebClient } from './deepseek-client-web';
 import { MCPClient } from './mcp-client';
 
 interface WorkflowResult {
@@ -23,11 +23,11 @@ export interface WorkflowExecutionStep {
 }
 
 export class WorkflowParser {
-  private deepseekClient: DeepSeekClient;
+  private deepseekClient: DeepSeekWebClient;
   private mcpClient: MCPClient;
 
   constructor() {
-    this.deepseekClient = createDeepSeekClient();
+    this.deepseekClient = createDeepSeekWebClient();
     this.mcpClient = new MCPClient();
   }
 
@@ -44,7 +44,8 @@ export class WorkflowParser {
   async parseVoiceCommand(userInput: string): Promise<ParsedCommand> {
     try {
       const commandJson = await this.deepseekClient.translateToWorkflowCommand(userInput);
-      const command = JSON.parse(commandJson);
+      const cleanJson = this.extractJsonFromMarkdown(commandJson);
+      const command = JSON.parse(cleanJson);
       
       return {
         intent: this.extractIntent(userInput),
@@ -63,19 +64,38 @@ export class WorkflowParser {
     }
   }
 
+  private extractJsonFromMarkdown(text: string): string {
+    // Remove markdown code blocks if present
+    const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (jsonMatch) {
+      return jsonMatch[1].trim();
+    }
+    
+    // If no markdown code blocks, try to find JSON object
+    const jsonObjectMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonObjectMatch) {
+      return jsonObjectMatch[0].trim();
+    }
+    
+    // Return as-is if no patterns match
+    return text.trim();
+  }
+
   async executeWorkflowCommand(parsedCommand: ParsedCommand): Promise<WorkflowResult> {
     try {
       const { action, parameters } = parsedCommand;
       
       switch (action) {
         case 'list_workflows':
-          const workflows = await this.mcpClient.listWorkflows(); return { success: true, message: "Workflows retrieved", data: workflows };
+          const workflows = await this.mcpClient.listWorkflows();
+          return { success: true, message: "Workflows retrieved", data: workflows };
         
         case 'search_templates':
           const templates = await this.mcpClient.searchTemplates(
             parameters.query || '', 
             parameters.category
           );
+          return { success: true, message: "Templates found", data: templates };
         
         case 'execute_workflow':
           return await this.mcpClient.executeWorkflow(parameters.workflowId);

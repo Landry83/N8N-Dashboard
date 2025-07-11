@@ -6,6 +6,7 @@ import { SectionCards } from "@/components/section-cards";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Play, Square, Power, PowerOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { VoiceInterface } from "@/components/voice-interface";
@@ -188,54 +189,56 @@ export function DashboardContent() {
                     No workflows found
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    {workflows.map((workflow) => (
-                      <div key={workflow.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1">
-                          <h4 className="font-medium">{workflow.name}</h4>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Badge variant={workflow.active ? "default" : "secondary"}>
-                              {workflow.active ? "Active" : "Inactive"}
-                            </Badge>
-                            <span>•</span>
-                            <span>{workflow.nodes?.length || 0} nodes</span>
-                            <span>•</span>
-                            <span>Updated {new Date(workflow.updatedAt).toLocaleDateString()}</span>
+                  <ScrollArea className="h-[400px]">
+                    <div className="space-y-4 pr-4">
+                      {workflows.map((workflow) => (
+                        <div key={workflow.id} className="flex items-center justify-between p-4 border rounded-lg">
+                          <div className="space-y-1">
+                            <h4 className="font-medium">{workflow.name}</h4>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Badge variant={workflow.active ? "default" : "secondary"}>
+                                {workflow.active ? "Active" : "Inactive"}
+                              </Badge>
+                              <span>•</span>
+                              <span>{workflow.nodes?.length || 0} nodes</span>
+                              <span>•</span>
+                              <span>Updated {new Date(workflow.updatedAt).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleWorkflowAction('execute', workflow.id)}
+                              disabled={actionLoading === `execute-${workflow.id}`}
+                            >
+                              {actionLoading === `execute-${workflow.id}` ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Play className="h-4 w-4" />
+                              )}
+                              Execute
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant={workflow.active ? "destructive" : "default"}
+                              onClick={() => handleWorkflowAction(workflow.active ? 'deactivate' : 'activate', workflow.id)}
+                              disabled={actionLoading === `${workflow.active ? 'deactivate' : 'activate'}-${workflow.id}`}
+                            >
+                              {actionLoading === `${workflow.active ? 'deactivate' : 'activate'}-${workflow.id}` ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : workflow.active ? (
+                                <PowerOff className="h-4 w-4" />
+                              ) : (
+                                <Power className="h-4 w-4" />
+                              )}
+                              {workflow.active ? 'Deactivate' : 'Activate'}
+                            </Button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleWorkflowAction('execute', workflow.id)}
-                            disabled={actionLoading === `execute-${workflow.id}`}
-                          >
-                            {actionLoading === `execute-${workflow.id}` ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Play className="h-4 w-4" />
-                            )}
-                            Execute
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant={workflow.active ? "destructive" : "default"}
-                            onClick={() => handleWorkflowAction(workflow.active ? 'deactivate' : 'activate', workflow.id)}
-                            disabled={actionLoading === `${workflow.active ? 'deactivate' : 'activate'}-${workflow.id}`}
-                          >
-                            {actionLoading === `${workflow.active ? 'deactivate' : 'activate'}-${workflow.id}` ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : workflow.active ? (
-                              <PowerOff className="h-4 w-4" />
-                            ) : (
-                              <Power className="h-4 w-4" />
-                            )}
-                            {workflow.active ? 'Deactivate' : 'Activate'}
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 )}
               </CardContent>
             </Card>

@@ -3,10 +3,22 @@ import { Label } from "@/components/ui/label"
 import { Toggle } from "@/components/ui/toggle"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SiteHeader } from "@/components/site-header"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function SettingsPage() {
   return (
-    <div className="container mx-auto p-6">
+    <SidebarProvider
+      style={{
+        "--sidebar-width": "calc(var(--spacing) * 72)",
+        "--header-height": "calc(var(--spacing) * 12)",
+      } as React.CSSProperties}
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col gap-4 p-4">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Settings</h1>
         <p className="text-muted-foreground">Manage your N8N dashboard preferences and configuration</p>
@@ -68,7 +80,9 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
-    </div>
+        </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 } 

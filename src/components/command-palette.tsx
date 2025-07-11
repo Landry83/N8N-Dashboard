@@ -26,6 +26,9 @@ import {
   HelpCircle,
   ChevronRight,
   Hash,
+  Clock,
+  Database,
+  Mail,
 } from "lucide-react"
 
 import {
@@ -67,54 +70,6 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
 
   const categories = [
     {
-      name: "Selecting Models",
-      items: [
-        {
-          name: "Thinking models",
-          description: "or want the model to act more independently. Thinking models are",
-          icon: Brain,
-          shortcut: "#",
-          onSelect: () => runCommand(() => router.push("/models/thinking")),
-        },
-      ],
-    },
-    {
-      name: "Working with Documentation",
-      items: [
-        {
-          name: "Accessing internal docs with MCP",
-          description: "and systems into Cursor. MCP acts as a thin layer",
-          icon: FileText,
-          shortcut: "#",
-          onSelect: () => runCommand(() => router.push("/docs/mcp")),
-        },
-      ],
-    },
-    {
-      name: "Documentation",
-      items: [
-        {
-          name: "Dashboard",
-          description: "The dashboard lets you access billing, set up usage-based pricing, and manage your Team.",
-          icon: BarChart3,
-          shortcut: "#",
-          onSelect: () => runCommand(() => router.push("/dashboard")),
-        },
-      ],
-    },
-    {
-      name: "Tools",
-      items: [
-        {
-          name: "Web",
-          description: "Generate search queries and perform web searches.",
-          icon: Globe,
-          shortcut: "#",
-          onSelect: () => runCommand(() => router.push("/tools/web")),
-        },
-      ],
-    },
-    {
       name: "Navigation",
       items: [
         {
@@ -125,6 +80,13 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
           onSelect: () => runCommand(() => router.push("/")),
         },
         {
+          name: "Dashboard",
+          description: "Main dashboard with analytics and overview",
+          icon: BarChart3,
+          shortcut: "⌘D",
+          onSelect: () => runCommand(() => router.push("/dashboard")),
+        },
+        {
           name: "Workflows",
           description: "Manage your n8n workflows",
           icon: Workflow,
@@ -133,68 +95,96 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
         },
         {
           name: "Templates",
-          description: "Browse workflow templates",
+          description: "Browse and deploy 3,807+ workflow templates",
           icon: FileText,
           shortcut: "⌘T",
           onSelect: () => runCommand(() => router.push("/templates")),
         },
         {
           name: "Integrations",
-          description: "View available integrations",
+          description: "View available integrations and services",
           icon: Zap,
           shortcut: "⌘I",
           onSelect: () => runCommand(() => router.push("/integrations")),
         },
         {
           name: "Executions",
-          description: "View workflow executions",
+          description: "Monitor workflow executions and history",
           icon: Play,
           shortcut: "⌘E",
           onSelect: () => runCommand(() => router.push("/executions")),
         },
         {
           name: "Credentials",
-          description: "Manage your credentials",
+          description: "Manage your API credentials and connections",
           icon: Shield,
           shortcut: "⌘C",
           onSelect: () => runCommand(() => router.push("/credentials")),
         },
         {
-          name: "Settings",
-          description: "Application settings",
-          icon: Settings,
-          shortcut: "⌘,",
-          onSelect: () => runCommand(() => router.push("/settings")),
+          name: "Search",
+          description: "Search across workflows, templates, and integrations",
+          icon: Search,
+          shortcut: "⌘S",
+          onSelect: () => runCommand(() => router.push("/search")),
         },
         {
-          name: "Search",
-          description: "Search everything",
-          icon: Search,
-          shortcut: "⌘K",
-          onSelect: () => runCommand(() => router.push("/search")),
+          name: "Documentation",
+          description: "Learn how to use n8n and manage workflows",
+          icon: FileText,
+          shortcut: "⌘?",
+          onSelect: () => runCommand(() => router.push("/docs")),
+        },
+        {
+          name: "System Health",
+          description: "Monitor system status and performance",
+          icon: Activity,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/system")),
         },
       ],
     },
     {
-      name: "Actions",
+      name: "Quick Actions",
       items: [
         {
           name: "Create New Workflow",
-          description: "Create a new workflow from scratch",
+          description: "Start building a new automation workflow",
           icon: Plus,
           shortcut: "⌘N",
-          onSelect: () => runCommand(() => router.push("/workflows/new")),
+          onSelect: () => runCommand(() => router.push("/workflows?action=new")),
         },
         {
           name: "Deploy Template",
           description: "Deploy a template to your n8n instance",
           icon: Upload,
-          shortcut: "⌘D",
+          shortcut: "⌘⇧D",
           onSelect: () => runCommand(() => router.push("/templates")),
         },
         {
+          name: "Test Connection",
+          description: "Test connection to n8n API",
+          icon: Globe,
+          shortcut: "⌘⇧T",
+          onSelect: () => runCommand(() => {
+            // Call the test API endpoint
+            fetch('/api/test-mcp')
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  alert('Connection successful!')
+                } else {
+                  alert('Connection failed: ' + data.error)
+                }
+              })
+              .catch(error => {
+                alert('Connection test failed: ' + error.message)
+              })
+          }),
+        },
+        {
           name: "Refresh Data",
-          description: "Refresh all data",
+          description: "Refresh all data and reload the page",
           icon: RefreshCw,
           shortcut: "⌘R",
           onSelect: () => runCommand(() => window.location.reload()),
@@ -203,63 +193,142 @@ export function CommandPalette({ open, setOpen }: CommandPaletteProps) {
           name: "Toggle Theme",
           description: "Switch between light and dark theme",
           icon: Sun,
-          shortcut: "⌘⇧T",
+          shortcut: "⌘⇧L",
           onSelect: () => runCommand(() => {
-            const theme = document.documentElement.classList.contains("dark") ? "light" : "dark"
             document.documentElement.classList.toggle("dark")
           }),
         },
       ],
     },
     {
-      name: "Recent",
+      name: "Workflow Management",
+      items: [
+        {
+          name: "List All Workflows",
+          description: "View all workflows in your n8n instance",
+          icon: Workflow,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/workflows")),
+        },
+        {
+          name: "Active Workflows Only",
+          description: "Filter to show only active workflows",
+          icon: Play,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/workflows?filter=active")),
+        },
+        {
+          name: "Recent Executions",
+          description: "View recent workflow executions",
+          icon: Clock,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/executions?time=recent")),
+        },
+        {
+          name: "Failed Executions",
+          description: "View failed workflow executions",
+          icon: X,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/executions?status=error")),
+        },
+      ],
+    },
+    {
+      name: "Template Categories",
+      items: [
+        {
+          name: "AI/ML Templates",
+          description: "1,996+ AI and machine learning workflows",
+          icon: Brain,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/templates?category=AI/ML")),
+        },
+        {
+          name: "Communication Templates",
+          description: "562+ communication and messaging workflows",
+          icon: MessageSquare,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/templates?category=Communication")),
+        },
+        {
+          name: "Database Templates",
+          description: "183+ database and storage workflows",
+          icon: Database,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/templates?category=Database")),
+        },
+        {
+          name: "Email Templates",
+          description: "Gmail automation and email workflows",
+          icon: Mail,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/templates?category=Email")),
+        },
+      ],
+    },
+    {
+      name: "Popular Searches",
       items: [
         {
           name: "OpenAI Workflows",
-          description: "Recently searched",
+          description: "AI-powered workflows using OpenAI",
           icon: Bot,
           shortcut: "",
           onSelect: () => runCommand(() => router.push("/templates?search=openai")),
         },
         {
           name: "Slack Integration",
-          description: "Recently viewed",
+          description: "Slack messaging and bot workflows",
           icon: MessageSquare,
           shortcut: "",
           onSelect: () => runCommand(() => router.push("/integrations?search=slack")),
         },
         {
-          name: "Failed Executions",
-          description: "Recently filtered",
-          icon: X,
+          name: "Gmail Automation",
+          description: "Email automation and processing",
+          icon: Mail,
           shortcut: "",
-          onSelect: () => runCommand(() => router.push("/executions?status=failed")),
+          onSelect: () => runCommand(() => router.push("/templates?search=gmail")),
+        },
+        {
+          name: "Discord Bots",
+          description: "Discord bot and automation workflows",
+          icon: Bot,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/templates?search=discord")),
         },
       ],
     },
     {
-      name: "System",
+      name: "System & Admin",
       items: [
         {
-          name: "System Status",
-          description: "View system health",
+          name: "System Health Check",
+          description: "Check n8n system status and connectivity",
           icon: Activity,
           shortcut: "",
           onSelect: () => runCommand(() => router.push("/system")),
         },
         {
           name: "API Documentation",
-          description: "View API docs",
+          description: "View API documentation and usage",
           icon: Code,
           shortcut: "",
           onSelect: () => runCommand(() => router.push("/docs")),
         },
         {
-          name: "Help & Support",
-          description: "Get help",
-          icon: HelpCircle,
-          shortcut: "⌘?",
-          onSelect: () => runCommand(() => router.push("/help")),
+          name: "Credential Management",
+          description: "Manage API keys and authentication",
+          icon: Shield,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/credentials")),
+        },
+        {
+          name: "Integration Catalog",
+          description: "Browse 365+ available integrations",
+          icon: Globe,
+          shortcut: "",
+          onSelect: () => runCommand(() => router.push("/integrations")),
         },
       ],
     },

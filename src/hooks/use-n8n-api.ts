@@ -55,6 +55,27 @@ export function useN8nApi() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch workflows');
+      // Set fallback mock data when API fails
+      setWorkflows([
+        {
+          id: 'mock_1',
+          name: 'AI Email Assistant (Demo Mode)',
+          active: true,
+          nodes: [{ type: 'trigger' }, { type: 'openai' }, { type: 'gmail' }],
+          updatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          connections: {}
+        },
+        {
+          id: 'mock_2',
+          name: 'Slack Bot Workflow (Demo Mode)',
+          active: false,
+          nodes: [{ type: 'webhook' }, { type: 'slack' }],
+          updatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          connections: {}
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -82,6 +103,25 @@ export function useN8nApi() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch executions');
+      // Set fallback mock data when API fails
+      setExecutions([
+        {
+          id: 'mock_exec_1',
+          workflowId: 'mock_1',
+          status: 'success',
+          startedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+          finishedAt: new Date(Date.now() - 1000 * 60 * 28).toISOString(),
+          mode: 'trigger'
+        },
+        {
+          id: 'mock_exec_2',
+          workflowId: 'mock_2',
+          status: 'error',
+          startedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+          finishedAt: new Date(Date.now() - 1000 * 60 * 44).toISOString(),
+          mode: 'manual'
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -106,6 +146,8 @@ export function useN8nApi() {
       setSystemHealth({
         status: 'error',
         n8nConnected: false,
+        templatesLoaded: 0,
+        integrationsAvailable: 0,
         lastCheck: new Date().toISOString()
       });
     }
