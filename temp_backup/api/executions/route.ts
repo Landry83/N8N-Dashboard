@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     // Get executions
     const executions = workflowId 
       ? await mcpClient.getExecutions(workflowId, limit)
-      : await mcpClient.getExecutions(undefined, limit);
+      : await mcpClient.getExecutions("", limit);
     
     return NextResponse.json({
       success: true,

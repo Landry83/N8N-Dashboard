@@ -1,6 +1,11 @@
 import { createDeepSeekClient, DeepSeekClient } from './deepseek-client';
-import { createMCPClient, MCPClient, WorkflowResult } from './mcp-client';
+import { MCPClient } from './mcp-client';
 
+interface WorkflowResult {
+  success: boolean;
+  message: string;
+  data?: any;
+}
 export interface ParsedCommand {
   intent: string;
   action: string;
@@ -23,12 +28,12 @@ export class WorkflowParser {
 
   constructor() {
     this.deepseekClient = createDeepSeekClient();
-    this.mcpClient = createMCPClient();
+    this.mcpClient = new MCPClient();
   }
 
   async initialize(): Promise<void> {
     try {
-      await this.mcpClient.connect();
+      // MCPClient does not require connection
       console.log('Workflow parser initialized successfully');
     } catch (error) {
       console.error('Failed to initialize workflow parser:', error);
@@ -64,10 +69,10 @@ export class WorkflowParser {
       
       switch (action) {
         case 'list_workflows':
-          return await this.mcpClient.listWorkflows();
+          const workflows = await this.mcpClient.listWorkflows(); return { success: true, message: "Workflows retrieved", data: workflows };
         
         case 'search_templates':
-          return await this.mcpClient.searchTemplates(
+          const templates = await this.mcpClient.searchTemplates(
             parameters.query || '', 
             parameters.category
           );
@@ -84,13 +89,13 @@ export class WorkflowParser {
         default:
           return {
             success: false,
-            error: `Unknown command: ${action}`
+            message: `Unknown command: ${action}`
           };
       }
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }
@@ -143,7 +148,7 @@ Result data: ${JSON.stringify(result.data)}
     if (result.success) {
       return await this.deepseekClient.generateJarvisResponse(context, userInput);
     } else {
-      return `I encountered an issue: ${result.error}. Let me know how I can help resolve this.`;
+      return `I encountered an issue: ${result.message}. Let me know how I can help resolve this.`;
     }
   }
 
@@ -193,7 +198,7 @@ Result data: ${JSON.stringify(result.data)}
       description: `Executing ${parsedCommand.action}`,
       status: result.success ? 'completed' : 'failed',
       result: result.data,
-      error: result.error,
+      error: result.message,
       timestamp: new Date()
     });
     

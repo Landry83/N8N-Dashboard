@@ -38,7 +38,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Execution {
   id: string;
   workflowId: string;
-  workflowName: string;
+  workflowName?: string;
   status: 'success' | 'error' | 'running' | 'waiting' | 'cancelled';
   startedAt: string;
   finishedAt?: string;
@@ -192,7 +192,7 @@ export default function ExecutionsPage() {
 
   const filteredExecutions = executions.filter(execution => {
     const matchesSearch = !searchQuery || 
-      execution.workflowName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (execution.workflowName || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
       execution.id.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || execution.status === statusFilter;
@@ -218,7 +218,7 @@ export default function ExecutionsPage() {
     return `${Math.floor(diff / 86400000)}d ago`;
   };
 
-  const uniqueWorkflows = Array.from(new Set(executions.map(e => ({ id: e.workflowId, name: e.workflowName }))))
+  const uniqueWorkflows = Array.from(new Set(executions.map(e => ({ id: e.workflowId, name: e.workflowName || `Workflow ${e.workflowId}` }))))
     .filter((workflow, index, self) => self.findIndex(w => w.id === workflow.id) === index);
 
   return (
@@ -413,7 +413,7 @@ export default function ExecutionsPage() {
                                 }`} 
                               />
                               <div>
-                                <h3 className="font-medium">{execution.workflowName}</h3>
+                                <h3 className="font-medium">{execution.workflowName || `Workflow ${execution.workflowId}`}</h3>
                                 <p className="text-sm text-muted-foreground">
                                   ID: {execution.id}
                                 </p>

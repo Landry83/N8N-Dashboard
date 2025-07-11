@@ -15,7 +15,6 @@ export async function GET() {
       success: true,
       health: {
         status: n8nConnected ? 'healthy' : 'unhealthy',
-        n8nConnected,
         ...systemHealth,
         timestamp: new Date().toISOString()
       }
